@@ -229,6 +229,13 @@
     transform-origin: 50% 60%;
 }
 
+/* Safari lama (< 16) belum mendukung overflow: clip */
+@supports not (overflow: clip) {
+    .pf-digit {
+        overflow: hidden;
+    }
+}
+
 /* Huruf/digit yang dibuat JS mewarisi font induknya (menangkal aturan font global) */
 .pf-title-label *,
 .pf-title-main *,
@@ -409,7 +416,7 @@
 }
 
 .pf-intro.is-static .pf-darken {
-    opacity: 0.55;
+    opacity: 0.45;
 }
 
 .pf-intro.is-static .pf-scrim {
@@ -421,12 +428,24 @@
     color: #ffffff;
 }
 
-.pf-intro.is-static .pf-title {
-    top: 30%;
+/* Judul dan angka disusun berurutan (bukan menumpuk di tengah) */
+.pf-intro.is-static .pf-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
 }
 
+.pf-intro.is-static .pf-title,
 .pf-intro.is-static .pf-count {
-    top: 64%;
+    position: static;
+    transform: none;
+}
+
+.pf-intro.is-static .pf-knockout,
+.pf-intro.is-static .pf-knockout-label {
+    display: none;
 }
 
 .pf-intro.is-static .pf-odometer {

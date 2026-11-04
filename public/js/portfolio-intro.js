@@ -49,7 +49,6 @@
     const reels = [];
     let odometerPlus = null;
     let knockoutPlus = null;
-    let cellPx = 0;
 
     /**
      * Bangun strip odometer dari angka. Digit ke-1 dan ke-2 berputar satu kali tambahan,
@@ -102,10 +101,14 @@
         if (countText) countText.textContent = `${number}+ project yang telah selesai`;
     }
 
-    /** Geser strip ke indeks (boleh pecahan) dalam px: translateY = -(indeks × cellPx). */
+    /**
+     * Geser strip ke indeks (boleh pecahan): translateY = -(indeks × tinggi sel).
+     * Tinggi sel memakai var(--cell) langsung, sehingga posisi benar tanpa menunggu
+     * pengukuran (angka akhir langsung tampil walau font/foto belum selesai dimuat).
+     */
     function setReelIndex(reel, index) {
         reel.index = index;
-        reel.strip.style.transform = `translate3d(0, ${-(index * cellPx)}px, 0)`;
+        reel.strip.style.transform = `translate3d(0, calc(var(--cell) * ${-index}), 0)`;
     }
 
     /**
@@ -129,10 +132,6 @@
         probe.remove();
         knockoutPlus.style.width = `${odometerPlus.offsetWidth}px`; /* offsetWidth: tidak terpengaruh scale(0) */
 
-        const firstItem = reels[0] && reels[0].strip.firstElementChild;
-        cellPx = firstItem ? firstItem.offsetHeight : 0;
-        reels.forEach((reel) => setReelIndex(reel, reel.index));
-
         /* Posisi layout odometer relatif terhadap stage (tanpa terpengaruh scale knockout) */
         const stageRect = stage.getBoundingClientRect();
         const odometerRect = odometer.getBoundingClientRect();
@@ -155,36 +154,57 @@
 
     buildOdometer(PROJECT_COUNT);
 
+    /* Keadaan awal = angka AKHIR (150). Timeline yang berjalan akan mengatur ulang ke 0. */
+    function showFinalState() {
+        section.classList.add('is-static');
+        reels.forEach((reel) => setReelIndex(reel, reel.finalIndex));
+    }
+    showFinalState();
+
     const gsap = window.gsap;
     const ScrollTrigger = window.ScrollTrigger;
     const SplitText = window.SplitText;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /*
+     * Setiap penantian diberi batas waktu: di Safari iOS, document.fonts.load() dan
+     * img.decode() bisa tidak pernah selesai, sehingga animasi tidak pernah dibuat.
+     */
+    const withTimeout = (promise, ms) => Promise.race([
+        Promise.resolve(promise).catch(() => null),
+        new Promise((resolve) => setTimeout(resolve, ms)),
+    ]);
 
     /* Font judul & angka diminta eksplisit, lalu tunggu document.fonts.ready */
     const fontsReady = document.fonts && document.fonts.load
-        ? Promise.all([
-            document.fonts.load("700 1em 'Plus Jakarta Sans'"),
-            document.fonts.load("400 1em 'JetBrains Mono'"),
-        ]).catch(() => null).then(() => document.fonts.ready)
+        ? withTimeout(
+            Promise.all([
+                document.fonts.load("700 1em 'Plus Jakarta Sans'"),
+                document.fonts.load("400 1em 'JetBrains Mono'"),
+            ]).catch(() => null).then(() => document.fonts.ready),
+            2500
+        )
         : Promise.resolve();
 
-    /* Tanpa animasi: keadaan akhir (foto penuh & gelap, judul putih, 150+, label) */
-    if (prefersReducedMotion || !gsap || !ScrollTrigger || !SplitText) {
-        fontsReady.then(() => {
-            measure();
-            reels.forEach((reel) => setReelIndex(reel, reel.finalIndex));
-        });
+    const windowLoaded = document.readyState === 'complete'
+        ? Promise.resolve()
+        : new Promise((resolve) => window.addEventListener('load', resolve, { once: true }));
+
+    /* Library gagal dimuat: tetap di keadaan akhir */
+    if (!gsap || !ScrollTrigger || !SplitText) {
+        fontsReady.then(measure);
         return;
     }
 
     gsap.registerPlugin(ScrollTrigger, SplitText);
 
-    /* Di HP, address bar yang muncul/hilang tidak memicu hitung ulang (penyebab layar meloncat) */
+    /* Di HP, address bar Safari yang muncul/hilang tidak memicu hitung ulang (penyebab layar meloncat) */
     ScrollTrigger.config({ ignoreMobileResize: true });
 
     /* ---------- Lenis smooth scroll, disinkronkan dengan ScrollTrigger ---------- */
-    if (window.Lenis && !window.__pfLenis) {
-        const lenis = new window.Lenis({ lerp: 0.07, smoothWheel: true });
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReducedMotion && window.Lenis && !window.__pfLenis) {
+        /* syncTouch false: scroll sentuh di HP tetap native (tidak dihaluskan Lenis) */
+        const lenis = new window.Lenis({ lerp: 0.07, smoothWheel: true, syncTouch: false });
         window.__pfLenis = lenis;
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => lenis.raf(time * 1000));
@@ -367,42 +387,76 @@
             labelSplit.revert();
             mainSplit.revert();
             media.style.clipPath = '';
-            section.classList.add('is-static');
             isPinActive = false;
             reels.forEach((reel) => {
-                setReelIndex(reel, reel.finalIndex);
                 reel.strip.style.filter = 'none';
             });
+            showFinalState();
         };
     }
 
     /* ---------- Mulai setelah foto & font siap ---------- */
-    /** Tunggu foto selesai dimuat & di-decode (gagal dimuat tetap dilanjutkan). */
-    const whenImageReady = (image) => new Promise((resolve) => {
+    /** Tunggu foto selesai dimuat & di-decode (gagal / macet tetap dilanjutkan). */
+    const whenImageReady = (image) => withTimeout(new Promise((resolve) => {
         if (!image || image.complete) {
             resolve();
             return;
         }
         image.addEventListener('load', resolve, { once: true });
         image.addEventListener('error', resolve, { once: true });
-    }).then(() => (image && image.decode ? image.decode().catch(() => null) : null));
+    }).then(() => (image && image.decode ? image.decode().catch(() => null) : null)), 4000);
 
-    Promise.all([whenImageReady(mediaSource), whenImageReady(secondMediaSource), fontsReady]).then(() => {
+    function init() {
         const breakpoints = gsap.matchMedia();
         breakpoints.add(
-            { isMobile: '(max-width: 767px)', isDesktop: '(min-width: 768px)' },
-            (context) => buildTimeline(context.conditions)
+            {
+                isDesktop: '(min-width: 768px) and (prefers-reduced-motion: no-preference)',
+                isMobile: '(max-width: 767px) and (prefers-reduced-motion: no-preference)',
+                isReduced: '(prefers-reduced-motion: reduce)',
+            },
+            (context) => {
+                const { isDesktop, isMobile } = context.conditions;
+                try {
+                    if (isDesktop || isMobile) {
+                        return buildTimeline({ isMobile });
+                    }
+                    /* Kurangi Gerakan: keadaan akhir tanpa pin/scrub */
+                    showFinalState();
+                    measure();
+                } catch (error) {
+                    console.error('[portfolio-intro] gagal membuat animasi:', error);
+                    showFinalState();
+                }
+                return undefined;
+            }
         );
 
         ScrollTrigger.refresh();
+    }
 
-        let resizeTimer = null;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                measure();
-                ScrollTrigger.refresh();
-            }, 150);
+    Promise.all([whenImageReady(mediaSource), whenImageReady(secondMediaSource), fontsReady])
+        .then(init)
+        .catch((error) => {
+            console.error('[portfolio-intro] inisialisasi gagal:', error);
+            showFinalState();
         });
+
+    /* Ukur ulang setelah semua aset halaman selesai (event "load") & saat ukuran layar berubah */
+    Promise.all([fontsReady, windowLoaded]).then(() => {
+        try {
+            measure();
+        } catch (error) {
+            console.error('[portfolio-intro] gagal mengukur:', error);
+        }
+        ScrollTrigger.refresh();
+    });
+
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            measure();
+            ScrollTrigger.refresh();
+        }, 150);
     });
 })();
