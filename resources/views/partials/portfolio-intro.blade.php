@@ -6,15 +6,19 @@
 --}}
 @php
     $featuredImage = 'SUNSET1.webp';
+    /* Foto kedua: muncul saat zoom knockout, menjadi foto yang ter-scroll setelah pin selesai */
+    $secondImage = 'Gkm (14 of 24).webp';
 @endphp
 
-<link rel="stylesheet" href="{{ asset('css/portfolio-intro.css') }}">
+<link rel="stylesheet" href="{{ asset('css/portfolio-intro.css') }}?v={{ @filemtime(public_path('css/portfolio-intro.css')) }}">
 <link rel="preload" as="image" href="{{ asset('images/'.$featuredImage) }}">
+<link rel="preload" as="image" href="{{ asset('images/'.$secondImage) }}">
 
 <section class="pf-intro is-static" aria-labelledby="pf-intro-title">
     <div class="pf-stage">
         <div class="pf-media">
             <img class="pf-media-src" src="{{ asset('images/'.$featuredImage) }}" alt="" decoding="async">
+            <img class="pf-media-src pf-media-src--2" src="{{ asset('images/'.$secondImage) }}" alt="" aria-hidden="true" decoding="async">
             <div class="pf-flicker" aria-hidden="true"></div>
             <div class="pf-vignette" aria-hidden="true"></div>
             {{-- Di dalam .pf-media agar ikut clip-path: area putih yang belum terbuka tidak ikut menggelap --}}
@@ -23,8 +27,6 @@
         </div>
 
         <div class="pf-center">
-            <div class="pf-corner">(01) Portofolio</div>
-
             <div class="pf-title" id="pf-intro-title" role="heading" aria-level="2">
                 <div class="pf-title-label">Hasil karya</div>
                 <span class="pf-title-main">Visual Production.</span>
@@ -45,6 +47,11 @@
             <div class="pf-knockout-text"></div>
         </div>
 
+        {{-- Di atas knockout (z-index 5): tetap terbaca saat latar berubah putih --}}
+        <div class="pf-knockout-label" aria-hidden="true">Project yang telah selesai</div>
+        <div class="pf-corner">(01) Portofolio</div>
+
+        <div class="pf-bottom-fade" aria-hidden="true"></div>
         <div class="pf-grain" aria-hidden="true"></div>
     </div>
 </section>
@@ -53,4 +60,4 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-<script src="{{ asset('js/portfolio-intro.js') }}" defer></script>
+<script src="{{ asset('js/portfolio-intro.js') }}?v={{ @filemtime(public_path('js/portfolio-intro.js')) }}" defer></script>

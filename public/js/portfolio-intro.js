@@ -9,8 +9,9 @@
  *   0.40-0.58  judul keluar
  *   0.47-0.80  odometer berputar, lalu tepi pudar digit hilang
  *   0.70-0.82  tanda "+" dan label angka muncul
- *   0.60-1.00  suasana: penggelap 0.45 → 0.55, foto zoom perlahan
- *   0.84-1.00  angka jadi jendela lalu zoom masuk lewat "+"
+ *   0.60-0.96  suasana: penggelap 0.45 → 0.55, foto zoom perlahan
+ *   0.84-0.96  angka jadi jendela, zoom masuk lewat "+", lapisan putih melebur
+ *   0.96-1.00  jeda: foto penuh diam, gradien bawah muncul, lalu pin dilepas
  */
 (function () {
     /** Satu-satunya angka yang perlu diganti: odometer, knockout, dan teks screen reader mengikutinya. */
@@ -22,6 +23,7 @@
     const stage = section.querySelector('.pf-stage');
     const media = section.querySelector('.pf-media');
     const mediaSource = section.querySelector('.pf-media-src');
+    const secondMediaSource = section.querySelector('.pf-media-src--2');
     const darken = section.querySelector('.pf-darken');
     const scrim = section.querySelector('.pf-scrim');
     const center = section.querySelector('.pf-center');
@@ -31,10 +33,14 @@
     const odometer = section.querySelector('.pf-odometer');
     const countLabel = section.querySelector('.pf-count-label');
     const countText = section.querySelector('[data-pf-count-text]');
+    const knockoutLabel = section.querySelector('.pf-knockout-label');
+    const corner = section.querySelector('.pf-corner');
+    const bottomFade = section.querySelector('.pf-bottom-fade');
     const knockout = section.querySelector('.pf-knockout');
     const knockoutText = section.querySelector('.pf-knockout-text');
 
-    const MIN_ZOOM = 40;
+    /** Skala akhir zoom knockout. Lapisan putih melebur selama zoom, jadi 40 sudah cukup. */
+    const KNOCKOUT_ZOOM = 40;
 
     /**
      * @type {{cell: HTMLElement, strip: HTMLElement, knockoutChar: HTMLElement,
@@ -136,6 +142,15 @@
         const originX = knockoutPlus.offsetLeft + knockoutPlus.offsetWidth / 2;
         const originY = knockoutPlus.offsetTop + knockoutPlus.offsetHeight * 0.55;
         knockoutText.style.transformOrigin = `${originX}px ${originY}px`;
+
+        /*
+         * Label knockout sejajar label asli. Diukur dari wrap-nya (bagian dalam padding),
+         * karena label asli sendiri masih tergeser translateY/letter-spacing sebelum animasinya.
+         */
+        const labelWrap = countLabel.parentElement;
+        const wrapRect = labelWrap.getBoundingClientRect();
+        const wrapPaddingTop = parseFloat(getComputedStyle(labelWrap).paddingTop) || 0;
+        knockoutLabel.style.top = `${wrapRect.top - stageRect.top + wrapPaddingTop}px`;
     }
 
     buildOdometer(PROJECT_COUNT);
@@ -164,6 +179,9 @@
 
     gsap.registerPlugin(ScrollTrigger, SplitText);
 
+    /* Di HP, address bar yang muncul/hilang tidak memicu hitung ulang (penyebab layar meloncat) */
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
     /* ---------- Lenis smooth scroll, disinkronkan dengan ScrollTrigger ---------- */
     if (window.Lenis && !window.__pfLenis) {
         const lenis = new window.Lenis({ lerp: 0.07, smoothWheel: true });
@@ -189,18 +207,6 @@
             reel.strip.style.filter = reel.blur > 0.05 ? `blur(${reel.blur.toFixed(2)}px)` : 'none';
         });
     });
-
-    /**
-     * Skala akhir minimal 40. Bila 40 belum cukup agar kotak hitam persilangan "+"
-     * (tebal ~0.08em) menutup sudut layar terjauh, skala dinaikkan otomatis.
-     */
-    function knockoutZoom() {
-        const fontSize = parseFloat(getComputedStyle(knockoutText).fontSize) || 1;
-        const plusStroke = fontSize * 0.08;
-        const viewportDiagonal = Math.hypot(window.innerWidth, window.innerHeight);
-
-        return Math.max(MIN_ZOOM, (viewportDiagonal * 2) / plusStroke);
-    }
 
     /** Durasi tiap huruf agar seluruh stagger selesai tepat di akhir rentang. */
     function staggeredDuration(start, end, stagger, total) {
@@ -242,8 +248,8 @@
                 end: isMobile ? '+=220%' : '+=320%',
                 pin: stage,
                 pinSpacing: true,
-                anticipatePin: 1,
-                scrub: 1.8,
+                /* scrub true: Lenis sudah menghaluskan scroll; scrub angka menambah jeda kedua sehingga foto tertinggal dari posisi pin */
+                scrub: true,
                 invalidateOnRefresh: true,
                 onToggle: (self) => {
                     isPinActive = self.isActive;
@@ -268,11 +274,11 @@
         timeline
             .to(screenOpen, { x: 0, duration: 0.1, ease: 'power4.inOut', onUpdate: applyClip }, 0.14)
             .to(screenOpen, { y: 0, duration: 0.18, ease: 'power4.inOut', onUpdate: applyClip }, 0.2)
-            .fromTo(mediaSource, { scale: 1.25 }, { scale: 1, duration: 0.18, ease: 'power4.inOut' }, 0.2);
+            .fromTo(mediaSource, { scale: 1.25 }, { scale: 1, duration: 0.18, ease: 'power4.inOut', force3D: true }, 0.2);
 
         /* 3. Keterbacaan, bersamaan layar terbuka */
         timeline
-            .fromTo(center, { color: '#111111' }, { color: '#ffffff', duration: 0.18, ease: 'power2.inOut' }, 0.2)
+            .fromTo([center, corner], { color: '#111111' }, { color: '#ffffff', duration: 0.18, ease: 'power2.inOut' }, 0.2)
             .fromTo(darken, { opacity: 0 }, { opacity: 0.45, duration: 0.18, ease: 'power2.inOut' }, 0.2)
             .fromTo(scrim, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: 'power2.inOut' }, 0.2);
 
@@ -317,16 +323,45 @@
         /* 8. Suasana */
         timeline
             .fromTo(darken, { opacity: 0.45 }, { opacity: 0.55, duration: 0.24, immediateRender: false }, 0.6)
-            .fromTo(mediaSource, { scale: 1 }, { scale: 1.1, duration: 0.4, immediateRender: false }, 0.6);
+            /* Berakhir di 0.96 (bukan 1.00) agar foto benar-benar diam selama jeda akhir */
+            /* Foto pertama berhenti di 0.86: setelah itu tertutup foto kedua (kecepatan zoom tetap sama) */
+            .fromTo(mediaSource, { scale: 1 }, { scale: 1.072, duration: 0.26, immediateRender: false, force3D: true }, 0.6);
 
-        /* 9. Angka jadi jendela, lalu zoom masuk lewat "+" */
+        /* Pergantian foto saat zoom knockout: kamera masuk lewat angka lalu mendarat di foto kedua */
+        timeline
+            .fromTo(secondMediaSource, { opacity: 0 }, { opacity: 1, duration: 0.08, ease: 'power2.inOut' }, 0.86)
+            .fromTo(secondMediaSource, { scale: 1.15 }, { scale: 1, duration: 0.14, ease: 'power2.out', force3D: true }, 0.86);
+
+        /*
+         * 9. Angka jadi jendela, lalu zoom masuk lewat "+".
+         * Lapisan putih melebur dan teks diburamkan selama zoom, jadi tidak ada potongan
+         * putih yang melompat keluar layar.
+         */
         timeline
             .fromTo(knockout, { opacity: 0 }, { opacity: 1, duration: 0.05, ease: 'power3.out' }, 0.84)
             .fromTo(count, { opacity: 1 }, { opacity: 0, duration: 0.05, ease: 'power3.out' }, 0.84)
             .fromTo(knockoutText,
                 { scale: 1 },
-                { scale: () => knockoutZoom(), duration: 0.11, ease: 'power3.in', force3D: false },
-                0.89);
+                { scale: KNOCKOUT_ZOOM, duration: 0.1, ease: 'power2.inOut', force3D: false },
+                0.86)
+            .fromTo(knockout, { opacity: 1 }, { opacity: 0, duration: 0.06, ease: 'power1.in', immediateRender: false }, 0.9)
+            .fromTo(knockoutText, { filter: blur(0) }, { filter: blur(8), duration: 0.06, immediateRender: false }, 0.9);
+
+        /* Label versi knockout (#111) muncul bersamaan .pf-count memudar, lalu turun & hilang saat zoom */
+        timeline
+            .fromTo(knockoutLabel, { opacity: 0, y: 0 }, { opacity: 1, duration: 0.05, ease: 'power3.out' }, 0.84)
+            .to(knockoutLabel, { y: 12, opacity: 0, duration: 0.04, ease: 'power2.in' }, 0.89);
+
+        /* Label pojok mengikuti latar: putih knockout → hitam, foto penuh di akhir zoom → putih lagi */
+        timeline
+            .fromTo(corner, { color: '#ffffff' }, { color: '#111111', duration: 0.05, immediateRender: false }, 0.84)
+            .fromTo(corner, { color: '#111111' }, { color: '#ffffff', duration: 0.04, immediateRender: false }, 0.92);
+
+        /* Gradien putih di bawah stage agar foto menyambung halus ke grid project */
+        timeline.fromTo(bottomFade, { opacity: 0 }, { opacity: 1, duration: 0.04, immediateRender: false }, 0.96);
+
+        /* Jeda 0.96-1.00: foto penuh diam sebentar sebelum pin dilepas */
+        timeline.to({}, { duration: 0.04 }, 0.96);
 
         return () => {
             labelSplit.revert();
@@ -342,16 +377,17 @@
     }
 
     /* ---------- Mulai setelah foto & font siap ---------- */
-    const imageReady = new Promise((resolve) => {
-        if (mediaSource.complete) {
+    /** Tunggu foto selesai dimuat & di-decode (gagal dimuat tetap dilanjutkan). */
+    const whenImageReady = (image) => new Promise((resolve) => {
+        if (!image || image.complete) {
             resolve();
             return;
         }
-        mediaSource.addEventListener('load', resolve, { once: true });
-        mediaSource.addEventListener('error', resolve, { once: true });
-    }).then(() => (mediaSource.decode ? mediaSource.decode().catch(() => null) : null));
+        image.addEventListener('load', resolve, { once: true });
+        image.addEventListener('error', resolve, { once: true });
+    }).then(() => (image && image.decode ? image.decode().catch(() => null) : null));
 
-    Promise.all([imageReady, fontsReady]).then(() => {
+    Promise.all([whenImageReady(mediaSource), whenImageReady(secondMediaSource), fontsReady]).then(() => {
         const breakpoints = gsap.matchMedia();
         breakpoints.add(
             { isMobile: '(max-width: 767px)', isDesktop: '(min-width: 768px)' },

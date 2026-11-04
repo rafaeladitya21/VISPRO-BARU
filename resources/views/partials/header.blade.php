@@ -1,5 +1,5 @@
 {{-- Header situs: logo, menu pill dengan indikator bergeser, dan tombol CTA. --}}
-<link rel="stylesheet" href="{{ asset('css/header.css') }}">
+<link rel="stylesheet" href="{{ asset('css/header.css') }}?v={{ @filemtime(public_path('css/header.css')) }}">
 
 <header class="vp-header" id="vpHeader">
     <a href="{{ url('/') }}#top" class="vp-brand" aria-label="Visual Production - Beranda">

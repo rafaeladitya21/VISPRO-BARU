@@ -3789,7 +3789,7 @@ dari Malang ke seluruh Indonesia</span><span class="hero-typing-caret"></span></
                     setTimeout(typeNextCharacter, 400);
                 })();
             </script>
-            <script src="{{ asset('js/hero-dot-grid.js') }}" defer></script>
+            <script src="{{ asset('js/hero-dot-grid.js') }}?v={{ @filemtime(public_path('js/hero-dot-grid.js')) }}" defer></script>
 
         </div>
 
@@ -4631,7 +4631,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })();
 </script>
 
-    <link rel="stylesheet" href="{{ asset('css/monochrome.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/monochrome.css') }}?v={{ @filemtime(public_path('css/monochrome.css')) }}">
     <div class="grain" aria-hidden="true"></div>
 </body>
 </html>

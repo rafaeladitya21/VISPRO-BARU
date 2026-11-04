@@ -83,4 +83,4 @@
     </div>
 </section>
 
-<script src="{{ asset('js/trusted-marquee.js') }}" defer></script>
+<script src="{{ asset('js/trusted-marquee.js') }}?v={{ @filemtime(public_path('js/trusted-marquee.js')) }}" defer></script>

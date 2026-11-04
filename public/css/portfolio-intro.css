@@ -45,6 +45,13 @@
     will-change: transform;
 }
 
+/* Foto kedua, tepat di atas foto pertama; muncul saat zoom knockout (diatur JS) */
+.pf-media-src--2 {
+    opacity: 0;
+    transform: scale(1.15);
+    will-change: transform, opacity;
+}
+
 .pf-flicker {
     position: absolute;
     inset: 0;
@@ -103,10 +110,14 @@
     pointer-events: none;
 }
 
+/* Di luar .pf-center agar bisa berada di atas .pf-knockout; warnanya dianimasikan JS */
 .pf-corner {
     position: absolute;
     top: 32px;
     left: 48px;
+    z-index: 5;
+    color: #111111;
+    pointer-events: none;
     font-family: 'JetBrains Mono', ui-monospace, monospace !important;
     font-weight: 400;
     font-size: 11px;
@@ -286,6 +297,40 @@
     margin-left: 0.02em;
 }
 
+/*
+ * Salinan label angka untuk tahap knockout. Gaya = .pf-count-label versi akhir.
+ * Melebar penuh dengan teks di tengah (sama seperti label asli yang dipusatkan di .pf-count);
+ * top diatur JS dari posisi label asli.
+ */
+.pf-knockout-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 5;
+    text-align: center;
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+    font-weight: 400;
+    font-size: clamp(11px, 1vw, 14px);
+    line-height: 1.4;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #111111;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ---------- Gradien bawah: sambungan halus ke grid project setelah pin dilepas ---------- */
+.pf-bottom-fade {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: linear-gradient(to bottom, transparent 70%, #ffffff 100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
 /* ---------- Film grain ---------- */
 .pf-grain {
     position: absolute;
@@ -324,9 +369,7 @@
     border: 0;
 }
 
-/* Setelah pin selesai, will-change dilepas (kelas dari JS) */
-.pf-intro.is-done .pf-media,
-.pf-intro.is-done .pf-media-src,
+/* Setelah pin selesai, will-change dilepas (kelas dari JS). Foto tidak termasuk: melepasnya membuat foto digambar ulang dan bergeser saat pin berakhir. */
 .pf-intro.is-done .pf-count,
 .pf-intro.is-done .pf-digit-strip,
 .pf-intro.is-done .pf-count-label {
@@ -359,6 +402,12 @@
     clip-path: none;
 }
 
+/* Keadaan akhir = foto kedua */
+.pf-intro.is-static .pf-media-src--2 {
+    opacity: 1;
+    transform: none;
+}
+
 .pf-intro.is-static .pf-darken {
     opacity: 0.55;
 }
@@ -367,7 +416,8 @@
     opacity: 1;
 }
 
-.pf-intro.is-static .pf-center {
+.pf-intro.is-static .pf-center,
+.pf-intro.is-static .pf-corner {
     color: #ffffff;
 }
 

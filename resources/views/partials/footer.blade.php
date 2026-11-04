@@ -66,4 +66,4 @@
     </div>
 </footer>
 
-<script src="{{ asset('js/footer-halftone.js') }}" defer></script>
+<script src="{{ asset('js/footer-halftone.js') }}?v={{ @filemtime(public_path('js/footer-halftone.js')) }}" defer></script>
