@@ -245,11 +245,14 @@
 }
 
 /* ---------- Label angka ---------- */
+/* Di atas tanda "+" (yang membesar dengan back.out) dan diberi jarak agar tidak tertimpa */
 .pf-count-label-wrap {
+    position: relative;
+    z-index: 2;
     display: block;
     overflow: hidden;
     padding: 4px 0;
-    margin-top: 12px;
+    margin-top: 24px;
     line-height: 1.4;
 }
 

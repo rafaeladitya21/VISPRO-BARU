@@ -132,11 +132,11 @@ p,
     position: relative;
     z-index: 1;
     margin: 0;
-    font-family: 'Newsreader', Georgia, serif !important;
-    font-weight: 400 !important;
-    font-size: clamp(1.5rem, 2.8vw, 3.25rem);
-    line-height: 1.15;
-    letter-spacing: -0.01em !important;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+    font-weight: 500 !important;
+    font-size: clamp(2rem, 4.2vw, 4.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em !important;
     text-align: center;
     color: var(--mono-ink) !important;
 }
@@ -160,42 +160,51 @@ p,
     color: #111111 !important;
 }
 
-/* Salinan teks tak terlihat menahan ukuran blok agar tidak bergeser saat mengetik */
-.hero-typing-ghost {
-    visibility: hidden;
-}
-
-/* Baris dipisah oleh newline di teks: 2 baris */
-.hero-typing-ghost,
 .hero-typing-text {
-    white-space: pre-line;
+    display: block;
     text-wrap: balance;
 }
 
-.hero-typing-live {
-    position: absolute;
-    inset: 0;
-}
-
-.hero-typing-caret {
+/* Kata tidak terpotong di tengah baris */
+.hero-typing-title .hero-word {
     display: inline-block;
-    width: 0.06em;
-    height: 0.9em;
-    margin-left: 0.06em;
-    vertical-align: -0.08em;
-    background-color: var(--mono-ink) !important;
+    white-space: nowrap;
 }
 
-.hero-typing-caret.is-done {
-    animation: heroCaretBlink 1s steps(1) infinite !important;
+/*
+ * Masuk per huruf seperti gelombang: fade + blur 10px (charFade) dan naik dengan sedikit pantulan (charWave).
+ * Selektor 2 class + !important agar tidak dimatikan oleh aturan `[class*="title"] span`.
+ */
+.hero-typing-title .hero-char {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(0.8em);
+    animation:
+        heroCharFade 1.1s cubic-bezier(.16, 1, .3, 1) forwards,
+        heroCharWave 1.3s cubic-bezier(.34, 1.45, .64, 1) forwards !important;
+    animation-delay: calc(0.3s + var(--i) * 45ms), calc(0.3s + var(--i) * 45ms) !important;
+    will-change: transform, opacity, filter;
 }
 
-@keyframes heroCaretBlink {
-    50% { opacity: 0; }
+@keyframes heroCharFade {
+    to {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@keyframes heroCharWave {
+    to {
+        transform: translateY(0);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .hero-typing-caret.is-done {
+    .hero-typing-title .hero-char {
+        opacity: 1;
+        filter: none;
+        transform: none;
         animation: none !important;
     }
 }
@@ -1333,8 +1342,9 @@ textarea::placeholder {
     margin: 0;
 }
 
+/* Rasio bingkai = rasio asli foto-team.webp (1920x1279) agar tidak ada orang yang terpotong */
 .vp-about-photo {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1920 / 1279;
     border-radius: 12px;
     overflow: hidden;
     clip-path: inset(0 0 0 0);
@@ -1345,7 +1355,8 @@ textarea::placeholder {
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    filter: grayscale(1) !important;
     transition: transform 1.8s var(--vp-ease-out) 0.2s;
 }
 
@@ -1824,14 +1835,135 @@ textarea::placeholder {
     }
 }
 
-/* ---------- Footer: gelap + halftone wave (public/js/footer-halftone.js) ---------- */
+/* ---------- CTA kontak: latar putih, judul masuk per huruf (public/js/contact-reveal.js) ---------- */
+.vp-contact {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 80px 48px;
+    background-color: #fff !important;
+}
+
+.vp-contact,
+.vp-contact * {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+}
+
+.vp-contact-inner {
+    width: 100%;
+}
+
+.vp-contact-heading {
+    margin: 0 0 40px;
+    font-size: clamp(44px, 6.5vw, 96px);
+    font-weight: 500 !important;
+    line-height: 1.05;
+    letter-spacing: -0.04em !important;
+}
+
+.vp-contact-line {
+    display: block;
+}
+
+.vp-contact .vp-contact-line {
+    color: #111 !important;
+}
+
+.vp-contact .vp-contact-line--muted {
+    color: #9a9a9a !important;
+}
+
+.vp-contact .vp-contact-line * {
+    color: inherit !important;
+}
+
+.vp-contact-word {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.vp-contact .vp-contact-phone {
+    display: inline-block;
+    padding-bottom: 6px;
+    font-size: 22px;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+    text-decoration: none;
+    color: #111 !important;
+    border-bottom: 2px solid #111;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.vp-contact .vp-contact-phone:hover {
+    color: #777 !important;
+    border-bottom-color: #777;
+}
+
+.vp-contact .vp-contact-phone:focus-visible {
+    outline: 1px solid #111;
+    outline-offset: 6px;
+}
+
+/* Keadaan awal hanya berlaku jika JS menambahkan .vp-contact--animate (tanpa JS semua tetap tampil) */
+.vp-contact--animate .vp-contact-char {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(0.8em);
+    will-change: transform, opacity, filter;
+}
+
+.vp-contact--animate.is-visible .vp-contact-char {
+    animation:
+        vpContactCharFade 1.1s cubic-bezier(.16, 1, .3, 1) forwards,
+        vpContactCharWave 1.3s cubic-bezier(.34, 1.45, .64, 1) forwards;
+    animation-delay: calc(var(--i) * 40ms), calc(var(--i) * 40ms);
+}
+
+@keyframes vpContactCharFade {
+    to {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@keyframes vpContactCharWave {
+    to {
+        transform: translateY(0);
+    }
+}
+
+.vp-contact--animate .vp-contact-phone {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.vp-contact--animate.is-visible .vp-contact-phone {
+    animation: vpContactFadeUp 0.9s cubic-bezier(.16, 1, .3, 1) 1.3s forwards;
+}
+
+@keyframes vpContactFadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 767px) {
+    .vp-contact {
+        padding: 64px 20px;
+    }
+}
+
+/* ---------- Footer: hitam + halftone wave (public/js/footer-halftone.js) ---------- */
 .vp-footer {
-    --vp-footer-ink: #f1efe8;
-    --vp-footer-muted: rgba(241, 239, 232, 0.45);
     position: relative;
     overflow: hidden;
-    margin-top: var(--vp-section-space);
-    background-color: #050505 !important;
+    margin: 0;
+    padding: 96px 48px 32px;
+    background-color: #111 !important;
 }
 
 .vp-footer-canvas {
@@ -1841,123 +1973,91 @@ textarea::placeholder {
     display: block;
     width: 100%;
     height: 100%;
-}
-
-/* Konten tidak menangkap kursor (agar canvas tetap bereaksi), kecuali tautan */
-.vp-footer-inner {
-    position: relative;
-    z-index: 1;
-    padding: 120px 48px 32px;
     pointer-events: none;
 }
 
-.vp-footer-inner a {
-    pointer-events: auto;
+.vp-footer-main,
+.vp-footer-bottom {
+    position: relative;
+    z-index: 1;
 }
 
 .vp-footer,
 .vp-footer * {
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
-    color: var(--vp-footer-ink) !important;
+}
+
+.vp-footer-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 48px;
 }
 
 .vp-footer-logo {
     display: inline-block;
-    margin-bottom: 56px;
+    flex-shrink: 0;
 }
 
-.vp-footer-cta {
-    margin-bottom: 80px;
+/* Logo footer 1.6x ukuran header: semua angka potongan (header.css) dikali 1.6 agar proporsinya sama */
+.vp-footer .vp-brand-logo {
+    width: 192px;
+    height: 64px;
 }
 
-.vp-footer-heading {
-    margin: 0 0 32px;
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
-    font-weight: 500 !important;
-    line-height: 1.08;
-    letter-spacing: -0.03em !important;
-}
-
-.vp-footer .vp-footer-heading-muted {
-    color: var(--vp-footer-muted) !important;
-}
-
-.vp-footer-phone {
-    position: relative;
-    display: inline-block;
-    padding-bottom: 6px;
-    font-size: 22px;
-    font-weight: 700 !important;
-    letter-spacing: -0.01em !important;
-    text-decoration: none;
-}
-
-.vp-footer-phone::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 2px;
-    background-color: var(--vp-footer-ink) !important;
-    transform-origin: right center;
-    transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-.vp-footer-phone:hover::after {
-    transform: scaleX(0);
-}
-
-.vp-footer-phone:focus-visible {
-    outline: 1px solid var(--vp-footer-ink) !important;
-    outline-offset: 6px;
+.vp-footer .vp-brand-logo-img {
+    top: -176px;
+    left: -66px;
+    width: 320px;
+    height: 400px;
 }
 
 .vp-footer-columns {
-    display: grid;
-    grid-template-columns: repeat(3, 180px);
-    gap: 48px;
+    display: flex;
+    gap: 96px;
 }
 
 .vp-footer .vp-footer-col-heading {
-    margin: 0 0 18px;
+    margin: 0 0 20px;
     font-family: 'JetBrains Mono', ui-monospace, monospace !important;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 400 !important;
     text-transform: uppercase;
-    letter-spacing: 0.12em !important;
-    color: rgba(241, 239, 232, 0.4) !important;
+    letter-spacing: 3px !important;
+    color: #cfcfcf !important;
 }
 
 .vp-footer-col ul {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.vp-footer-col a,
-.vp-footer-link-pending {
-    display: inline-block;
-    font-size: 15px;
+.vp-footer .vp-footer-col a,
+.vp-footer .vp-footer-link-pending {
+    font-size: 16px;
     font-weight: 400 !important;
     text-decoration: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    color: #eee !important;
+    transition: color 0.3s ease;
 }
 
-.vp-footer-col ul:has(a:hover) a:not(:hover),
-.vp-footer-col ul:has(a:hover) .vp-footer-link-pending {
-    opacity: 0.45;
+.vp-footer .vp-footer-col a:hover {
+    color: #888 !important;
 }
 
-.vp-footer-col a:hover {
-    transform: translateX(3px);
+/* Bayangan putih lembut (glow) pada label dan link menu footer agar menonjol di atas titik halftone */
+.vp-footer .vp-footer-col-heading,
+.vp-footer .vp-footer-col a,
+.vp-footer .vp-footer-link-pending {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.45), 0 0 2px rgba(255, 255, 255, 0.25);
 }
 
-.vp-footer-col a:focus-visible {
-    outline: 1px solid var(--vp-footer-ink) !important;
+.vp-footer .vp-footer-col a:focus-visible {
+    outline: 1px solid #eee;
     outline-offset: 3px;
 }
 
@@ -1965,40 +2065,51 @@ textarea::placeholder {
     display: flex;
     justify-content: space-between;
     gap: 16px;
-    margin-top: 96px;
+    margin-top: 80px;
     padding-top: 20px;
-    border-top: 1px solid rgba(241, 239, 232, 0.15) !important;
+    border-top: 1px solid #2a2a2a !important;
 }
 
 .vp-footer .vp-footer-bottom,
 .vp-footer .vp-footer-bottom * {
     font-size: 13px;
     font-weight: 300 !important;
-    color: var(--vp-footer-muted) !important;
+    color: #777 !important;
 }
 
-@media (max-width: 767px), (hover: none) {
-    .vp-footer-inner {
-        padding: 80px 20px 24px;
+@media (max-width: 767px) {
+    .vp-footer {
+        padding: 56px 20px 24px;
+    }
+
+    .vp-footer-main {
+        flex-direction: column;
+        gap: 40px;
     }
 
     .vp-footer-columns {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 40px 24px;
+        flex-direction: column;
+        gap: 36px;
     }
-}
 
-@media (max-width: 480px) {
     .vp-footer-bottom {
         flex-direction: column;
         gap: 6px;
+        margin-top: 56px;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .vp-footer-phone::after,
-    .vp-footer-col a,
-    .vp-footer-link-pending {
+    .vp-contact .vp-contact-phone,
+    .vp-footer .vp-footer-col a {
         transition: none;
+    }
+
+    .vp-contact--animate .vp-contact-char,
+    .vp-contact--animate .vp-contact-phone {
+        opacity: 1;
+        filter: none;
+        transform: none;
+        animation: none !important;
     }
 }

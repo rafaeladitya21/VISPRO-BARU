@@ -54,10 +54,12 @@
                 <ul class="vp-marquee-group vp-marquee-clients" @if ($isDuplicate) aria-hidden="true" @else aria-label="Klien" @endif>
                     @foreach ($trustedClients as $client)
                         <li class="vp-marquee-item vp-client">
+                            {{-- Klien berlogo tampil logo saja; nama dibacakan pembaca layar lewat aria-label --}}
                             @if ($client['logo'])
-                                <span class="vp-client-logo" aria-hidden="true" style="{{ $logoStyle($client['logo']) }}"></span>
+                                <span class="vp-client-logo" role="img" aria-label="{{ $client['name'] }}" style="{{ $logoStyle($client['logo']) }}"></span>
+                            @else
+                                <span class="vp-client-name">{{ $client['name'] }}</span>
                             @endif
-                            <span class="vp-client-name">{{ $client['name'] }}</span>
                         </li>
                     @endforeach
                 </ul>

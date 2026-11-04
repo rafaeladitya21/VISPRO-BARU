@@ -1,6 +1,7 @@
 {{--
-    Footer gelap dengan latar halftone wave (canvas).
-    Animasi: public/js/footer-halftone.js. Gaya: public/css/monochrome.css (bagian "Footer").
+    (1) Section CTA putih: judul masuk per huruf (public/js/contact-reveal.js).
+    (2) Footer hitam dengan latar halftone wave (public/js/footer-halftone.js).
+    Gaya: public/css/monochrome.css (bagian "CTA" dan "Footer").
 --}}
 @php
     /* url null = belum punya tautan; tampil sebagai teks biasa sampai diisi */
@@ -25,20 +26,25 @@
     ];
 @endphp
 
+<section class="vp-contact" aria-labelledby="vp-contact-heading">
+    <div class="vp-contact-inner">
+        <h2 id="vp-contact-heading" class="vp-contact-heading">
+            <span class="vp-contact-line">Punya event besar?</span>
+            <span class="vp-contact-line vp-contact-line--muted">Mari kita bicarakan.</span>
+        </h2>
+        <a href="https://wa.me/6285746642358" target="_blank" rel="noopener" class="vp-contact-phone">0857 4664 2358 ↗</a>
+    </div>
+</section>
+
 <footer class="vp-footer">
     <canvas class="vp-footer-canvas" aria-hidden="true"></canvas>
 
-    <div class="vp-footer-inner">
+    <div class="vp-footer-main">
         <a href="{{ url('/') }}#top" class="vp-footer-logo" aria-label="Visual Production - kembali ke atas">
             <span class="vp-brand-logo">
                 <img src="{{ asset('images/logo-vp.webp') }}" alt="Visual Production" class="vp-brand-logo-img">
             </span>
         </a>
-
-        <div class="vp-footer-cta">
-            <h2 class="vp-footer-heading">Punya event besar?<br><span class="vp-footer-heading-muted">Mari kita bicarakan.</span></h2>
-            <a href="https://wa.me/6285746642358" target="_blank" rel="noopener" class="vp-footer-phone">0857 4664 2358 ↗</a>
-        </div>
 
         <div class="vp-footer-columns">
             @foreach ($footerColumns as $columnTitle => $links)
@@ -58,12 +64,13 @@
                 </nav>
             @endforeach
         </div>
+    </div>
 
-        <div class="vp-footer-bottom">
-            <span>&copy; {{ date('Y') }} Visual Production.id</span>
-            <span>Divisi dari CV Han Media Tekindo</span>
-        </div>
+    <div class="vp-footer-bottom">
+        <span>&copy; {{ date('Y') }} Visual Production.id</span>
+        <span>Divisi dari CV Han Media Tekindo</span>
     </div>
 </footer>
 
+<script src="{{ asset('js/contact-reveal.js') }}?v={{ @filemtime(public_path('js/contact-reveal.js')) }}" defer></script>
 <script src="{{ asset('js/footer-halftone.js') }}?v={{ @filemtime(public_path('js/footer-halftone.js')) }}" defer></script>

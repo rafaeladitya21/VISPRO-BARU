@@ -17,6 +17,14 @@
     /** Satu-satunya angka yang perlu diganti: odometer, knockout, dan teks screen reader mengikutinya. */
     const PROJECT_COUNT = 150;
 
+    /*
+     * Pengaturan kecepatan (ubah di sini).
+     * SCROLL_DISTANCE: panjang scroll selama section di-pin; makin besar = makin pelan/slow motion.
+     * SCRUB: detik animasi "mengejar" posisi scroll; 1.5-2 = gerak tertinggal halus.
+     */
+    const SCROLL_DISTANCE = { desktop: '+=500%', mobile: '+=360%' };
+    const SCRUB = { desktop: 1.5, mobile: 1.5 };
+
     const section = document.querySelector('.pf-intro');
     if (!section) return;
 
@@ -265,15 +273,12 @@
             scrollTrigger: {
                 trigger: section,
                 start: 'top top',
-                end: isMobile ? '+=220%' : '+=320%',
+                end: isMobile ? SCROLL_DISTANCE.mobile : SCROLL_DISTANCE.desktop,
                 pin: stage,
                 pinSpacing: true,
-                /*
-                 * Desktop: scrub true, karena Lenis sudah menghaluskan roda mouse/trackpad.
-                 * HP: scroll sentuh tidak dihaluskan Lenis (syncTouch false), jadi scrub
-                 * diberi waktu kejar agar zoom tidak meloncat mengikuti usapan jari.
-                 */
-                scrub: isMobile ? 0.6 : true,
+                anticipatePin: 1,
+                /* Scrub berupa angka (bukan true): animasi tertinggal halus di belakang scroll */
+                scrub: isMobile ? SCRUB.mobile : SCRUB.desktop,
                 invalidateOnRefresh: true,
                 onToggle: (self) => {
                     isPinActive = self.isActive;
@@ -380,10 +385,13 @@
             timeline.fromTo(knockoutText, { filter: blur(0) }, { filter: blur(8), duration: 0.06, immediateRender: false }, 0.9);
         }
 
-        /* Label versi knockout (#111) muncul bersamaan .pf-count memudar, lalu turun & hilang saat zoom */
+        /*
+         * Label versi knockout (#111) muncul bersamaan .pf-count memudar, lalu turun & hilang
+         * sebelum "+" yang diperbesar sempat menimpanya (zoom mulai 0.86, masih pelan di awal).
+         */
         timeline
-            .fromTo(knockoutLabel, { opacity: 0, y: 0 }, { opacity: 1, duration: 0.05, ease: 'power3.out' }, 0.84)
-            .to(knockoutLabel, { y: 12, opacity: 0, duration: 0.04, ease: 'power2.in' }, 0.89);
+            .fromTo(knockoutLabel, { opacity: 0, y: 0 }, { opacity: 1, duration: 0.04, ease: 'power3.out' }, 0.84)
+            .to(knockoutLabel, { y: 12, opacity: 0, duration: 0.03, ease: 'power2.in' }, 0.865);
 
         /* Label pojok mengikuti latar: putih knockout → hitam, foto penuh di akhir zoom → putih lagi */
         timeline

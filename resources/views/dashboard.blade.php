@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Newsreader:opsz,wght@6..72,400&family=JetBrains+Mono:wght@400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gloock&family=JetBrains+Mono:wght@400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -3751,44 +3751,24 @@
             {{-- ========== HERO: TEKS MENGETIK DI LATAR PUTIH ========== --}}
             <div class="hero-typing">
                 <canvas class="hero-dot-grid" aria-hidden="true"></canvas>
-                <h1 class="hero-typing-title" aria-label="Tim produksi Visual Multimedia Event dan Festival #1, dari Malang ke seluruh Indonesia">
-                    <span class="hero-typing-ghost" aria-hidden="true">Tim produksi Visual Multimedia Event dan Festival #1,
-dari Malang ke seluruh Indonesia</span>
-                    <span class="hero-typing-live" aria-hidden="true"><span class="hero-typing-text">Tim produksi Visual Multimedia Event dan Festival #1,
-dari Malang ke seluruh Indonesia</span><span class="hero-typing-caret"></span></span>
+                <h1 class="hero-typing-title" aria-label="Multimedia Production and Equipment">
+                    @php
+                        /* Urutan --i per huruf; spasi antar kata ikut dihitung agar ada jeda kecil */
+                        $heroWords = [];
+                        $heroCharacterIndex = 0;
+                        foreach (['Multimedia', 'Production', 'and', 'Equipment'] as $heroWord) {
+                            $heroCharacters = [];
+                            foreach (mb_str_split($heroWord) as $heroCharacter) {
+                                $heroCharacters[] = ['character' => $heroCharacter, 'index' => $heroCharacterIndex++];
+                            }
+                            $heroWords[] = $heroCharacters;
+                            $heroCharacterIndex++;
+                        }
+                    @endphp
+                    <span class="hero-typing-text" aria-hidden="true">@foreach ($heroWords as $heroCharacters)<span class="hero-word">@foreach ($heroCharacters as $heroCharacter)<span class="hero-char" style="--i: {{ $heroCharacter['index'] }}">{{ $heroCharacter['character'] }}</span>@endforeach</span>{{ $loop->last ? '' : ' ' }}@endforeach</span>
                 </h1>
             </div>
 
-            <script>
-                (function () {
-                    const target = document.querySelector('.hero-typing-text');
-                    const caret = document.querySelector('.hero-typing-caret');
-                    if (!target) return;
-
-                    const fullText = target.textContent;
-                    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                    if (prefersReducedMotion) {
-                        caret?.classList.add('is-done');
-                        return;
-                    }
-
-                    target.textContent = '';
-                    let index = 0;
-
-                    function typeNextCharacter() {
-                        index++;
-                        target.textContent = fullText.slice(0, index);
-                        if (index < fullText.length) {
-                            const justTypedPause = /[,#]/.test(fullText[index - 1]) ? 260 : 0;
-                            setTimeout(typeNextCharacter, 42 + justTypedPause);
-                        } else {
-                            caret?.classList.add('is-done');
-                        }
-                    }
-
-                    setTimeout(typeNextCharacter, 400);
-                })();
-            </script>
             <script src="{{ asset('js/hero-dot-grid.js') }}?v={{ @filemtime(public_path('js/hero-dot-grid.js')) }}" defer></script>
 
         </div>
