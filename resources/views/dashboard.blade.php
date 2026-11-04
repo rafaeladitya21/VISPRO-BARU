@@ -4322,6 +4322,27 @@ document.addEventListener('DOMContentLoaded', function () {
         popupObserver.observe(el);
     });
 
+    // ========== ANIMASI MASUK JUDUL SECTION (vp-section-intro) ==========
+    // Gaya: public/css/monochrome.css. Elemen disembunyikan hanya jika JS berjalan.
+    const sectionIntros = document.querySelectorAll('.vp-section-intro');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+        const introObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    introObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.25, rootMargin: '0px 0px -40px 0px' });
+
+        sectionIntros.forEach(intro => {
+            intro.classList.add('js-reveal');
+            introObserver.observe(intro);
+        });
+    }
+
     // ========== TYPING ANIMATION FOR CEO ==========
     function typeWriter(element, text, speed = 80) {
         let i = 0;
