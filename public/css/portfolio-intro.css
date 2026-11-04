@@ -1,0 +1,420 @@
+/*
+ * Pembuka section Portofolio (sinematik, hitam-putih).
+ * Markup: resources/views/partials/portfolio-intro.blade.php
+ * Animasi: public/js/portfolio-intro.js
+ *
+ * Section ini dikecualikan dari aturan global monochrome.css (warna, latar, filter),
+ * jadi warnanya diatur di sini. Font tetap diberi !important karena aturan font
+ * global monochrome.css berlaku untuk setiap elemen (termasuk huruf hasil SplitText).
+ */
+
+.pf-intro {
+    position: relative;
+    clear: both;
+    background: #ffffff;
+}
+
+.pf-stage {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    isolation: isolate;
+    background: #ffffff;
+}
+
+/* ---------- Media featured ---------- */
+.pf-media {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    clip-path: inset(49.6% 50% 49.6% 50%);
+    will-change: clip-path;
+    background: #000000;
+}
+
+.pf-media-src {
+    position: absolute;
+    inset: -6%;
+    width: 112%;
+    height: 112%;
+    max-width: none;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.1) brightness(0.85);
+    will-change: transform;
+}
+
+.pf-flicker {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    mix-blend-mode: overlay;
+    opacity: 0;
+    animation: pf-flicker 4s steps(1) infinite;
+}
+
+@keyframes pf-flicker {
+    0% { opacity: 0; }
+    12% { opacity: 0.05; }
+    13% { opacity: 0; }
+    47% { opacity: 0.04; }
+    48% { opacity: 0; }
+    71% { opacity: 0.06; }
+    72% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+.pf-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/*
+ * ---------- Penggelap & scrim ----------
+ * Diletakkan di dalam .pf-media sehingga ikut terpotong clip-path: hanya foto yang
+ * digelapkan, area putih yang belum terbuka tidak berubah menjadi abu-abu.
+ */
+.pf-darken {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #000000;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pf-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(ellipse 60% 45% at 50% 50%, rgba(0, 0, 0, 0.35), transparent 75%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ---------- Blok tengah (warna #111 → #fff dianimasikan JS) ---------- */
+.pf-center {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    color: #111111;
+    pointer-events: none;
+}
+
+.pf-corner {
+    position: absolute;
+    top: 32px;
+    left: 48px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.pf-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    padding: 0 24px;
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+.pf-title-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.pf-title-main {
+    display: block;
+    margin-top: 18px;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-weight: 700;
+    font-size: clamp(2.75rem, 7vw, 6.5rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
+}
+
+.pf-count {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    will-change: transform, opacity;
+}
+
+/* ---------- Odometer ---------- */
+.pf-odometer,
+.pf-knockout-text {
+    --cell: 1.15em;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-weight: 700;
+    font-size: clamp(6rem, 16vw, 14rem);
+    line-height: var(--cell);
+    letter-spacing: normal;
+    white-space: nowrap;
+}
+
+.pf-odometer {
+    --fade: 18%;
+    display: flex;
+    align-items: flex-start;
+    opacity: 0;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
+}
+
+/*
+ * Lebar slot (--slot) = lebar digit akhir, diukur JS. Jendela dilebarkan --pad ke kiri-kanan
+ * lalu ditarik balik dengan margin negatif: tata letak tetap selebar digit akhir, tetapi
+ * digit lain yang lebih lebar tidak terpotong samping saat berputar (mask-image ikut
+ * memotong ke kotak elemen, jadi overflow-x: visible saja tidak cukup).
+ */
+.pf-digit {
+    --slot: 0.62em;
+    --pad: 0.2em;
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+    width: calc(var(--slot) + 2 * var(--pad));
+    margin: 0 calc(-1 * var(--pad));
+    height: var(--cell);
+    overflow-x: visible;
+    overflow-y: clip;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 var(--fade), #000 calc(100% - var(--fade)), transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 var(--fade), #000 calc(100% - var(--fade)), transparent 100%);
+}
+
+.pf-digit-strip {
+    display: block;
+    will-change: transform, filter;
+}
+
+.pf-digit-strip span {
+    display: block;
+    height: var(--cell);
+    line-height: var(--cell);
+    text-align: center;
+}
+
+.pf-plus {
+    display: inline-block;
+    height: var(--cell);
+    line-height: var(--cell);
+    vertical-align: top;
+    margin-left: 0.02em;
+    transform: scale(0);
+    transform-origin: 50% 60%;
+}
+
+/* Huruf/digit yang dibuat JS mewarisi font induknya (menangkal aturan font global) */
+.pf-title-label *,
+.pf-title-main *,
+.pf-odometer *,
+.pf-knockout-text * {
+    font-family: inherit !important;
+}
+
+/* ---------- Label angka ---------- */
+.pf-count-label-wrap {
+    display: block;
+    overflow: hidden;
+    padding: 4px 0;
+    margin-top: 12px;
+    line-height: 1.4;
+}
+
+.pf-count-label {
+    display: block;
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+    font-weight: 400;
+    font-size: clamp(11px, 1vw, 14px);
+    letter-spacing: 0.6em;
+    text-transform: uppercase;
+    transform: translateY(110%);
+    opacity: 0;
+    will-change: transform, opacity, letter-spacing;
+}
+
+/* ---------- Knockout (angka jadi jendela) ---------- */
+.pf-knockout {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background: #ffffff;
+    mix-blend-mode: screen;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/*
+ * Posisi (left/top) dan lebar tiap karakter diatur JS dari odometer agar menumpuk tepat.
+ * Tanpa will-change: browser menggambar ulang huruf tiap frame saat zoom, tepi tetap tajam.
+ */
+.pf-knockout-text {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    color: #000000;
+}
+
+.pf-knockout-text > span {
+    display: inline-block;
+    height: var(--cell);
+    line-height: var(--cell);
+    text-align: center;
+}
+
+.pf-knockout-text {
+    align-items: flex-start;
+}
+
+.pf-knockout-plus {
+    margin-left: 0.02em;
+}
+
+/* ---------- Film grain ---------- */
+.pf-grain {
+    position: absolute;
+    inset: -100%;
+    width: 300%;
+    height: 300%;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0.13;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    background-repeat: repeat;
+    animation: pf-grain 0.6s steps(6) infinite;
+}
+
+@keyframes pf-grain {
+    0% { transform: translate(0, 0); }
+    17% { transform: translate(-4%, 3%); }
+    33% { transform: translate(3%, -5%); }
+    50% { transform: translate(-6%, -2%); }
+    67% { transform: translate(5%, 4%); }
+    83% { transform: translate(-2%, 6%); }
+    100% { transform: translate(0, 0); }
+}
+
+/* ---------- Aksesibilitas ---------- */
+.pf-intro .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Setelah pin selesai, will-change dilepas (kelas dari JS) */
+.pf-intro.is-done .pf-media,
+.pf-intro.is-done .pf-media-src,
+.pf-intro.is-done .pf-count,
+.pf-intro.is-done .pf-digit-strip,
+.pf-intro.is-done .pf-count-label {
+    will-change: auto;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 767px) {
+    .pf-odometer,
+    .pf-knockout-text {
+        font-size: clamp(5rem, 16vw, 14rem);
+    }
+
+    .pf-title-main {
+        font-size: clamp(2.25rem, 7vw, 6.5rem);
+    }
+
+    .pf-grain {
+        opacity: 0.1;
+    }
+
+    .pf-corner {
+        top: 20px;
+        left: 20px;
+    }
+}
+
+/* ---------- Keadaan akhir tanpa animasi (reduced motion / library gagal dimuat) ---------- */
+.pf-intro.is-static .pf-media {
+    clip-path: none;
+}
+
+.pf-intro.is-static .pf-darken {
+    opacity: 0.55;
+}
+
+.pf-intro.is-static .pf-scrim {
+    opacity: 1;
+}
+
+.pf-intro.is-static .pf-center {
+    color: #ffffff;
+}
+
+.pf-intro.is-static .pf-title {
+    top: 30%;
+}
+
+.pf-intro.is-static .pf-count {
+    top: 64%;
+}
+
+.pf-intro.is-static .pf-odometer {
+    --fade: 0%;
+    opacity: 1;
+}
+
+.pf-intro.is-static .pf-plus {
+    transform: none;
+}
+
+.pf-intro.is-static .pf-count-label {
+    transform: none;
+    opacity: 1;
+    letter-spacing: 0.2em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pf-grain,
+    .pf-flicker {
+        animation: none;
+    }
+}
+
+/* ---------- Lenis (smooth scroll) ---------- */
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}

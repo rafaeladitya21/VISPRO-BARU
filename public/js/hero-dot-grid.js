@@ -12,7 +12,11 @@
 
     const GRID_SPACING = 12;
     const BASE_RADIUS = 0.75;
-    const BASE_ALPHA = 0.13;
+    const BASE_ALPHA = 0.10;
+    const LETTER_ALPHA_MIN = 0.22;
+    const LETTER_ALPHA_MAX = 0.50;
+    const LETTER_RADIUS_MIN = 0.95;
+    const LETTER_RADIUS_MAX = 1.4;
     const CURSOR_RADIUS = 150;
     const CURSOR_PUSH = 12;
     const CURSOR_GROW = 1.4;
@@ -117,8 +121,8 @@
                 const shimmer = prefersReducedMotion
                     ? 0.5
                     : 0.5 + 0.5 * Math.sin((x + y) * 0.012 - elapsedFrames * 0.04);
-                alpha = 0.13 + 0.22 * shimmer;
-                radius = 0.75 + 0.35 * shimmer;
+                alpha = LETTER_ALPHA_MIN + (LETTER_ALPHA_MAX - LETTER_ALPHA_MIN) * shimmer;
+                radius = LETTER_RADIUS_MIN + (LETTER_RADIUS_MAX - LETTER_RADIUS_MIN) * shimmer;
             }
 
             if (cursorActive) {

@@ -6,7 +6,9 @@
     <title>Visual Production - Jasa Foto Video Event Malang</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Gloock&family=JetBrains+Mono:wght@400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Newsreader:opsz,wght@6..72,400&family=JetBrains+Mono:wght@400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -3995,25 +3997,15 @@ dari Malang ke seluruh Indonesia</span><span class="hero-typing-caret"></span></
     {{-- ============================================ --}}
     {{-- ========== PORTFOLIO & CONTENT SECTION ========== --}}
     {{-- ============================================ --}}
+    {{-- Pembuka Portofolio (sinematik, pin + scroll) --}}
+    @include('partials.portfolio-intro')
+
     <section class="stats-testimoni-section" id="proyek" style="clear: both; padding-top: 80px;">
     <div class="stats-testimoni-wrapper" style="max-width: 1400px; margin: 0 auto;">
 
         {{-- Portofolio Project (gaya editorial) --}}
         <div class="portofolio-section vp-portfolio">
-            <div class="vp-section-label">
-                <span>(01) Portofolio</span>
-                <a href="#semua-proyek" class="vp-section-link">
-                    Lihat semua
-                    <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                        <path d="M3.5 10.5L10.5 3.5M10.5 3.5H4.5M10.5 3.5V9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </a>
-            </div>
-
-            <div class="vp-section-intro">
-                <h2 class="vp-section-heading">Hasil karya Visual Production.</h2>
-                <p class="vp-section-lead">Beberapa project terbaik yang telah kami kerjakan untuk klien dari berbagai industri.</p>
-            </div>
+            {{-- Label "(01) Portofolio" dan judul "Hasil karya Visual Production." kini ada di partials.portfolio-intro --}}
 
             {{-- Slider project unggulan: id dipertahankan untuk script carousel --}}
             <div class="vp-showcase" id="sunset-kebun">
