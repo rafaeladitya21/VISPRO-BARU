@@ -268,8 +268,12 @@
                 end: isMobile ? '+=220%' : '+=320%',
                 pin: stage,
                 pinSpacing: true,
-                /* scrub true: Lenis sudah menghaluskan scroll; scrub angka menambah jeda kedua sehingga foto tertinggal dari posisi pin */
-                scrub: true,
+                /*
+                 * Desktop: scrub true, karena Lenis sudah menghaluskan roda mouse/trackpad.
+                 * HP: scroll sentuh tidak dihaluskan Lenis (syncTouch false), jadi scrub
+                 * diberi waktu kejar agar zoom tidak meloncat mengikuti usapan jari.
+                 */
+                scrub: isMobile ? 0.6 : true,
                 invalidateOnRefresh: true,
                 onToggle: (self) => {
                     isPinActive = self.isActive;
@@ -362,10 +366,19 @@
             .fromTo(count, { opacity: 1 }, { opacity: 0, duration: 0.05, ease: 'power3.out' }, 0.84)
             .fromTo(knockoutText,
                 { scale: 1 },
-                { scale: KNOCKOUT_ZOOM, duration: 0.1, ease: 'power2.inOut', force3D: false },
+                /*
+                 * Desktop: force3D false agar tepi angka tajam (digambar ulang tiap frame).
+                 * HP: force3D true, diperbesar oleh GPU tanpa menggambar ulang (jauh lebih ringan);
+                 * tepinya sedikit lembut, tetapi lapisan putih memang sedang melebur.
+                 */
+                { scale: KNOCKOUT_ZOOM, duration: 0.1, ease: 'power2.inOut', force3D: isMobile },
                 0.86)
-            .fromTo(knockout, { opacity: 1 }, { opacity: 0, duration: 0.06, ease: 'power1.in', immediateRender: false }, 0.9)
-            .fromTo(knockoutText, { filter: blur(0) }, { filter: blur(8), duration: 0.06, immediateRender: false }, 0.9);
+            .fromTo(knockout, { opacity: 1 }, { opacity: 0, duration: 0.06, ease: 'power1.in', immediateRender: false }, 0.9);
+
+        /* Blur pada teks yang diperbesar 40x terlalu berat untuk GPU HP: hanya di desktop */
+        if (!isMobile) {
+            timeline.fromTo(knockoutText, { filter: blur(0) }, { filter: blur(8), duration: 0.06, immediateRender: false }, 0.9);
+        }
 
         /* Label versi knockout (#111) muncul bersamaan .pf-count memudar, lalu turun & hilang saat zoom */
         timeline
