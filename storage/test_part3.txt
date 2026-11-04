@@ -1,0 +1,31 @@
+
+
+        <div class="bento-col bento-col-right">
+            <article class="bento-panel bento-panel-feature">
+                <header class="bento-panel-header">
+                    <div class="bento-step">
+                        <span class="bento-step-number">02</span>
+                        <span class="bento-step-pulse"></span>
+                    </div>
+                    <div class="bento-panel-meta">
+                        <h3 class="bento-panel-title">Penugasan &amp; Jabatan</h3>
+                        <p class="bento-panel-desc">Posisi strategis karyawan dalam organisasi</p>
+                    </div>
+                </header>
+
+                <div class="bento-panel-body bento-panel-body-spaced">
+
+                    <div class="premium-field">
+                        <label for="departemen" class="premium-label">
+                            <span class="premium-label-text">Divisi</span>
+                            <span class="premium-label-required">*</span>
+                        </label>
+
+                        <div class="divisi-select" id="divisiSelect">
+                            <button type="button" class="divisi-select-trigger @error("departemen") is-invalid @enderror" id="divisiTrigger" aria-haspopup="listbox" aria-expanded="false">
+                                <span class="divisi-select-value" id="divisiValue">
+                                    <span class="divisi-select-placeholder">PILIH DEVISI</span>
+                                </span>
+                                <span class="divisi-select-arrow"><i class="fas fa-chevron-down"></i></span>
+                                <span class="divisi-select-glow"></span>
+                            </button>

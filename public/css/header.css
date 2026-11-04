@@ -1,0 +1,292 @@
+/*
+ * Header situs (partials/header.blade.php).
+ * Memakai !important karena monochrome.css menimpa warna, border, dan bayangan secara global.
+ */
+
+html {
+    scroll-padding-top: 104px !important;
+}
+
+/* overflow-x: hidden pada body mematikan position: sticky; clip tidak. */
+body {
+    overflow-x: clip !important;
+}
+
+.vp-header {
+    --vp-bg: #0b0e12;
+    --vp-ink: #ffffff;
+    --vp-ink-muted: rgba(255, 255, 255, 0.65);
+    --vp-cream: #f1efe8;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: 104px;
+    padding: 0 48px;
+    background-color: var(--vp-bg) !important;
+    box-shadow: none !important;
+    /* Muncul kembali */
+    transition:
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.3s ease;
+}
+
+/* Smart header: sembunyi saat scroll ke bawah setelah hero */
+.vp-header.is-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        transform 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+        opacity 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+        background-color 0.3s ease;
+}
+
+/* Di luar hero: semi-transparan + blur agar terbaca di atas konten putih */
+.vp-header.is-scrolled {
+    background-color: rgba(11, 14, 18, 0.85) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    backdrop-filter: blur(12px) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vp-header,
+    .vp-header.is-hidden {
+        transition: none;
+    }
+}
+
+.vp-header,
+.vp-header * {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+    color: var(--vp-ink) !important;
+}
+
+/* ---------- Kiri: logo ---------- */
+.vp-brand {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    text-decoration: none;
+}
+
+/*
+ * logo-vp.webp (2160x2700) punya ruang kosong besar; isi logonya hanya ~16% tinggi gambar.
+ * Gambar diperbesar lalu dipotong sehingga isi logo tampil setinggi 40px.
+ */
+.vp-brand-logo {
+    position: relative;
+    display: block;
+    width: 120px;
+    height: 40px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.vp-brand-logo-img {
+    position: absolute;
+    top: -110px;
+    left: -41px;
+    width: 200px;
+    height: 250px;
+    max-width: none;
+}
+
+.vp-brand-divider {
+    width: 1px;
+    height: 36px;
+    margin: 0 22px;
+    background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.vp-brand-text {
+    font-size: 9px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+}
+
+/* ---------- Tengah: menu pill ---------- */
+.vp-nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 9999px;
+    background-color: transparent !important;
+}
+
+.vp-nav-indicator {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: 0;
+    border: 1.5px solid rgba(220, 232, 255, 0.85) !important;
+    border-radius: 9999px;
+    background-color: var(--vp-bg) !important;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 12px rgba(180, 200, 255, 0.12) !important;
+    pointer-events: none;
+}
+
+.vp-nav.is-ready .vp-nav-indicator {
+    transition: left 0.4s cubic-bezier(0.65, 0, 0.35, 1), width 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.vp-nav-item {
+    position: relative;
+    z-index: 1;
+    padding: 12px 26px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 300 !important;
+    letter-spacing: 0.01em !important;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--vp-ink-muted) !important;
+    transition: color 0.3s ease;
+}
+
+.vp-nav-item.is-current,
+.vp-nav-item:focus-visible {
+    color: var(--vp-ink) !important;
+}
+
+.vp-nav-item:focus-visible {
+    outline: 1px solid rgba(220, 232, 255, 0.85);
+    outline-offset: 2px;
+}
+
+/* ---------- Kanan: CTA ---------- */
+.vp-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    justify-self: end;
+    gap: 12px;
+}
+
+.vp-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 24px;
+    padding: 14px 22px;
+    border-radius: 9999px;
+    background-color: var(--vp-cream) !important;
+    font-size: 14px;
+    font-weight: 400 !important;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+}
+
+.vp-header .vp-cta,
+.vp-header .vp-cta * {
+    color: var(--vp-bg) !important;
+}
+
+.vp-cta-arrow {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.vp-cta:hover {
+    background-color: #ffffff !important;
+}
+
+.vp-cta:hover .vp-cta-arrow {
+    transform: translate(2px, -2px);
+}
+
+/* ---------- Hamburger & menu mobile ---------- */
+.vp-burger {
+    display: none;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0 !important;
+    background-color: transparent !important;
+    cursor: pointer;
+}
+
+.vp-burger-line {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    height: 1px;
+    background-color: var(--vp-ink) !important;
+    transition: transform 0.3s ease, top 0.3s ease;
+}
+
+.vp-burger-line:nth-child(1) { top: 16px; }
+.vp-burger-line:nth-child(2) { top: 23px; }
+
+.vp-burger.is-open .vp-burger-line:nth-child(1) { top: 20px; transform: rotate(45deg); }
+.vp-burger.is-open .vp-burger-line:nth-child(2) { top: 20px; transform: rotate(-45deg); }
+
+.vp-mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 16px 20px;
+    background-color: var(--vp-bg) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.vp-mobile-menu[hidden] {
+    display: none;
+}
+
+.vp-mobile-menu a {
+    padding: 14px 4px;
+    font-size: 16px;
+    font-weight: 300 !important;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+@media (max-width: 900px) {
+    .vp-header {
+        grid-template-columns: 1fr auto;
+        padding: 0 16px;
+    }
+
+    .vp-nav,
+    .vp-brand-divider,
+    .vp-brand-text {
+        display: none;
+    }
+
+    .vp-burger {
+        display: inline-block;
+    }
+
+    .vp-cta {
+        padding: 10px 16px;
+        gap: 14px;
+    }
+}
+
+@media (min-width: 901px) {
+    .vp-mobile-menu {
+        display: none !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vp-nav.is-ready .vp-nav-indicator,
+    .vp-cta-arrow,
+    .vp-burger-line {
+        transition: none;
+    }
+}

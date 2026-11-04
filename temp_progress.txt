@@ -1,0 +1,4 @@
+- [x] Identify Joinbareng API key wiring
+- [x] Diagnose 401 error (root cause: endpoint 404, bukan 401)
+- [x] Verify Claude CLI config (same invalid BASE_URL = same problem)
+- [x] Provide clear fix instructions to user

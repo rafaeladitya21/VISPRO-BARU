@@ -1,0 +1,51 @@
+@extends('layouts.app')
+
+@section('content')
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter:ital,wght@1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+<section class="premium-hero">
+    <div class="premium-hero-bg"></div>
+    <div class="premium-hero-grid"></div>
+    <div class="premium-hero-glow"></div>
+
+    <div class="premium-hero-content">
+        <div class="premium-eyebrow">
+            <span class="premium-eyebrow-dot"></span>
+            <span>HR CONTROL CENTER &middot; EDIT MODE</span>
+        </div>
+
+        <h1 class="premium-title">
+            Edit Data<br>
+            <span class="premium-title-accent">Karyawan</span>
+        </h1>
+
+        <p class="premium-subtitle">
+            Perbarui informasi karyawan dengan mudah &mdash;
+            <br class="d-none d-md-inline">
+            formulir premium untuk manajemen talenta profesional.
+        </p>
+
+        <div class="premium-meta">
+            <div class="premium-meta-item">
+                <span class="premium-meta-label">CREW ID</span>
+                <span class="premium-meta-value">{{ $employee->nip }}</span>
+            </div>
+            <span class="premium-meta-sep">&middot;</span>
+            <div class="premium-meta-item">
+                <span class="premium-meta-label">Status</span>
+                <span class="premium-meta-value status-ready">
+                    <span class="status-dot"></span> Editing
+                </span>
+            </div>
+            <span class="premium-meta-sep">&middot;</span>
+            <div class="premium-meta-item">
+                <span class="premium-meta-label">Updated</span>
+                <span class="premium-meta-value">{{ now()->format('d M Y') }}</span>
+            </div>
+        </div>
+    </div>
+</section>
+
