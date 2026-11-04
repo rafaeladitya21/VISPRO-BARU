@@ -4005,7 +4005,10 @@ dari Malang ke seluruh Indonesia</span><span class="hero-typing-caret"></span></
 
         {{-- Portofolio Project (gaya editorial) --}}
         <div class="portofolio-section vp-portfolio">
-            {{-- Label "(01) Portofolio" dan judul "Hasil karya Visual Production." kini ada di partials.portfolio-intro --}}
+            <div class="vp-section-intro">
+                <h2 class="vp-section-heading">Hasil karya Visual Production.</h2>
+                <p class="vp-section-lead">Beberapa project terbaik yang telah kami kerjakan untuk klien dari berbagai industri.</p>
+            </div>
 
             {{-- Slider project unggulan: id dipertahankan untuk script carousel --}}
             <div class="vp-showcase" id="sunset-kebun">
