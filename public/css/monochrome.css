@@ -1342,7 +1342,7 @@ textarea::placeholder {
     margin: 0;
 }
 
-/* Rasio bingkai = rasio asli foto-team.webp (1920x1279) agar tidak ada orang yang terpotong */
+/* Rasio bingkai = rasio asli Foto BTS/bts1.webp (1920x1279) agar tidak ada orang yang terpotong */
 .vp-about-photo {
     aspect-ratio: 1920 / 1279;
     border-radius: 12px;
@@ -1831,6 +1831,170 @@ textarea::placeholder {
     .vp-info-row,
     .vp-info-content,
     .vp-info-arrow {
+        transition: none;
+    }
+}
+
+/* ---------- (06) Behind the crew: carousel WebGL liquid lens (public/js/crew-carousel.js) ---------- */
+.vp-crew {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    padding-top: 120px !important;
+    padding-bottom: 40px !important;
+    padding-left: max(40px, calc((100% - 1400px) / 2)) !important;
+    padding-right: max(40px, calc((100% - 1400px) / 2)) !important;
+}
+
+.vp-crew-label,
+.vp-crew-label * {
+    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+    font-size: 12px;
+}
+
+/* Stage selebar layar agar kartu tepi bisa keluar dari kolom konten */
+.vp-crew-stage {
+    position: relative;
+    width: 100vw;
+    height: clamp(420px, 64vh, 600px);
+    margin: 40px 0 0 calc(50% - 50vw);
+    outline: none;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.vp-crew-stage:focus-visible {
+    outline: 1px solid var(--mono-ink) !important;
+    outline-offset: -8px;
+}
+
+.vp-crew-canvas {
+    position: absolute;
+    inset: 0;
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.vp-crew--gl .vp-crew-canvas {
+    display: block;
+    cursor: grab;
+}
+
+.vp-crew--gl .vp-crew-stage.is-dragging .vp-crew-canvas {
+    cursor: grabbing;
+}
+
+/* Fallback (tanpa WebGL / reduced motion): strip scroll-snap biasa */
+.vp-crew-track {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 100%;
+    margin: 0;
+    padding: 0 max(40px, calc((100vw - 1400px) / 2));
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.vp-crew-track::-webkit-scrollbar {
+    display: none;
+}
+
+.vp-crew-item {
+    flex: none;
+    height: 60%;
+    scroll-snap-align: center;
+}
+
+.vp-crew-item img {
+    display: block;
+    height: 100%;
+    width: auto;
+    filter: grayscale(1) !important;
+}
+
+/* Mode WebGL: foto asli tetap ada untuk pembaca layar, tapi disembunyikan */
+.vp-crew--gl .vp-crew-track {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.vp-crew-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.vp-crew .vp-crew-button {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid rgba(0, 0, 0, 0.18) !important;
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 1;
+    color: #6b6b6b !important;
+    cursor: pointer;
+    transition: border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.vp-crew .vp-crew-button:hover {
+    border-color: var(--mono-ink) !important;
+    color: var(--mono-ink) !important;
+}
+
+.vp-crew .vp-crew-button:active {
+    transform: scale(0.94);
+}
+
+.vp-crew-counter,
+.vp-crew-hint {
+    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+    font-size: 12px;
+}
+
+.vp-crew .vp-crew-counter {
+    min-width: 64px;
+    text-align: center;
+    color: var(--mono-ink) !important;
+}
+
+.vp-crew .vp-crew-hint {
+    margin-left: auto;
+    color: #9a9a9a !important;
+}
+
+@media (max-width: 767px) {
+    .vp-crew {
+        padding-top: 88px !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    .vp-crew-stage {
+        height: clamp(340px, 52vh, 460px);
+        margin-top: 24px;
+    }
+
+    .vp-crew .vp-crew-hint {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vp-crew .vp-crew-button {
         transition: none;
     }
 }

@@ -31,7 +31,7 @@
     <div class="vp-about-grid">
         <figure class="vp-about-figure">
             <div class="vp-about-photo">
-                <img src="{{ asset('images/foto-team.webp') }}" alt="Tim Visual Production" loading="lazy">
+                <img src="{{ asset('images/Foto%20BTS/bts1.webp') }}" alt="Tim Visual Production" loading="lazy">
             </div>
             <figcaption class="vp-about-caption">Tim Visual Production di belakang panggung.</figcaption>
         </figure>

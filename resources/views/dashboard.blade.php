@@ -4434,6 +4434,9 @@ document.addEventListener('DOMContentLoaded', function () {
 {{-- ========== (05) LOKASI ========== --}}
 @include('partials.location')
 
+{{-- ========== (06) BEHIND THE CREW ========== --}}
+@include('partials.crew')
+
 {{-- ========== FOOTER ========== --}}
 @include('partials.footer')
 
