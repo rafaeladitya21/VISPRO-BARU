@@ -27,12 +27,21 @@
 @endphp
 
 <section class="vp-contact" aria-labelledby="vp-contact-heading">
+    <div class="vp-contact-aurora" aria-hidden="true">
+        <span class="vp-contact-blob vp-contact-blob--violet"></span>
+        <span class="vp-contact-blob vp-contact-blob--pink"></span>
+        <span class="vp-contact-blob vp-contact-blob--amber"></span>
+    </div>
+
     <div class="vp-contact-inner">
         <h2 id="vp-contact-heading" class="vp-contact-heading">
-            <span class="vp-contact-line">Punya event besar?</span>
-            <span class="vp-contact-line vp-contact-line--muted">Mari kita bicarakan.</span>
+            <span class="vp-contact-line">Sedang Merencanakan Event?</span>
+            <span class="vp-contact-line vp-contact-line--gradient">Mari Kita Wujudkan.</span>
         </h2>
-        <a href="https://wa.me/6285746642358" target="_blank" rel="noopener" class="vp-contact-phone">0857 4664 2358 ↗</a>
+        <a href="https://wa.me/6285746642358?text={{ rawurlencode('Halo Visual Production, saya ingin free konsultasi untuk event saya.') }}" target="_blank" rel="noopener" class="vp-contact-cta">
+            <span class="vp-contact-cta-label">Free Konsultasi</span>
+            <span class="vp-contact-cta-arrow" aria-hidden="true">↗</span>
+        </a>
     </div>
 </section>
 

@@ -9,6 +9,41 @@
     if (!section || !heading) return;
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    /* Aurora mengikuti kursor + tombol CTA "magnetic" (hanya perangkat dengan mouse) */
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        const aurora = section.querySelector('.vp-contact-aurora');
+        const ctaButton = section.querySelector('.vp-contact-cta');
+        const AURORA_SHIFT_PX = 40;
+        const MAGNET_STRENGTH = 0.25;
+
+        section.addEventListener('pointermove', function (event) {
+            const bounds = section.getBoundingClientRect();
+            const relativeX = (event.clientX - bounds.left) / bounds.width - 0.5;
+            const relativeY = (event.clientY - bounds.top) / bounds.height - 0.5;
+
+            if (aurora) {
+                aurora.style.setProperty('--vp-px', (relativeX * AURORA_SHIFT_PX).toFixed(1) + 'px');
+                aurora.style.setProperty('--vp-py', (relativeY * AURORA_SHIFT_PX).toFixed(1) + 'px');
+            }
+        });
+
+        if (ctaButton) {
+            ctaButton.addEventListener('pointermove', function (event) {
+                const bounds = ctaButton.getBoundingClientRect();
+                const offsetX = event.clientX - (bounds.left + bounds.width / 2);
+                const offsetY = event.clientY - (bounds.top + bounds.height / 2);
+                ctaButton.style.setProperty('--vp-mx', (offsetX * MAGNET_STRENGTH).toFixed(1) + 'px');
+                ctaButton.style.setProperty('--vp-my', (offsetY * MAGNET_STRENGTH).toFixed(1) + 'px');
+            });
+
+            ctaButton.addEventListener('pointerleave', function () {
+                ctaButton.style.setProperty('--vp-mx', '0px');
+                ctaButton.style.setProperty('--vp-my', '0px');
+            });
+        }
+    }
+
     if (!('IntersectionObserver' in window)) return;
 
     /* Jeda tambahan antar baris, dalam satuan huruf (5 x 40ms = 200ms) */
