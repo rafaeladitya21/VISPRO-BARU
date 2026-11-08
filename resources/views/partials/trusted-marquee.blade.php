@@ -6,6 +6,7 @@
     /*
      * Klien. 'logo' opsional: file di public/images, ukuran asli [lebar, tinggi],
      * dan 'crop' [x, y, lebar, tinggi] = area isi logo (membuang ruang kosong di file).
+     * 'height' opsional (px) untuk logo bertumpuk/kotak agar tetap terbaca; default $logoHeight.
      */
     $trustedClients = [
         ['name' => 'Universitas Terbuka', 'logo' => ['file' => 'ut.png', 'size' => [2580, 2048], 'crop' => [16, 0, 2540, 2028]]],
@@ -14,14 +15,27 @@
         ['name' => 'BUMN Indonesia', 'logo' => ['file' => 'bumn.webp', 'size' => [960, 172], 'crop' => [0, 0, 960, 172]]],
         ['name' => 'Danantara Indonesia', 'logo' => ['file' => 'danantara.webp', 'size' => [550, 550], 'crop' => [22, 208, 505, 134]]],
         ['name' => 'Kemendikbud', 'logo' => ['file' => 'kemendikdasmen.png', 'size' => [1920, 364], 'crop' => [5, 5, 1915, 354]]],
+        /* Logo event & klien dari public/images/LOGO */
+        ['name' => 'MAN 3 Malang', 'logo' => ['file' => 'LOGO/man-3-malang.webp', 'size' => [400, 400], 'crop' => [0, 0, 400, 400], 'height' => 44]],
+        ['name' => 'Paradic Fest Vol. 3', 'logo' => ['file' => 'LOGO/paradic-fest-3.webp', 'size' => [591, 422], 'crop' => [0, 0, 591, 422], 'height' => 40]],
+        ['name' => 'Sunset di Kebun', 'logo' => ['file' => 'LOGO/sunset-di-kebun.webp', 'size' => [328, 400], 'crop' => [1, 124, 327, 157], 'height' => 40]],
+        ['name' => 'Dempo Fair XLVIII', 'logo' => ['file' => 'LOGO/dempo-fair.webp', 'size' => [1200, 377], 'crop' => [69, 40, 1061, 289], 'height' => 34]],
+        ['name' => 'Good Day Schoolicious', 'logo' => ['file' => 'LOGO/good-day-schoolicious.webp', 'size' => [738, 249], 'crop' => [0, 15, 738, 234], 'height' => 34]],
+        ['name' => 'Riuh Riang', 'logo' => ['file' => 'LOGO/riuh-riang.webp', 'size' => [1024, 448], 'crop' => [123, 34, 762, 380], 'height' => 40]],
+        ['name' => 'Sayapmas Festival', 'logo' => ['file' => 'LOGO/sayapmas-festival.webp', 'size' => [447, 447], 'crop' => [24, 116, 413, 235], 'height' => 40]],
+        ['name' => 'Signatureè 2026', 'logo' => ['file' => 'LOGO/signaturee-2026.webp', 'size' => [225, 225], 'crop' => [32, 66, 162, 92], 'height' => 40]],
+        ['name' => 'We Hear UU', 'logo' => ['file' => 'LOGO/we-hear-uu.webp', 'size' => [867, 729], 'crop' => [0, 0, 867, 729], 'height' => 40]],
+        ['name' => 'RED UV', 'logo' => ['file' => 'LOGO/red-uv.webp', 'size' => [447, 116], 'crop' => [32, 8, 408, 100]]],
+        ['name' => 'Osskit Entertainment', 'logo' => ['file' => 'LOGO/osskit.webp', 'size' => [150, 150], 'crop' => [1, 41, 128, 63], 'height' => 34]],
     ];
 
     $logoHeight = 26;
 
-    /** Hitung style background agar hanya area 'crop' yang tampil setinggi $logoHeight. */
+    /** Hitung style background agar hanya area 'crop' yang tampil setinggi 'height' (default $logoHeight). */
     $logoStyle = function (array $logo) use ($logoHeight): string {
         [$imageWidth, $imageHeight] = $logo['size'];
         [$cropX, $cropY, $cropWidth, $cropHeight] = $logo['crop'];
+        $logoHeight = $logo['height'] ?? $logoHeight;
 
         $boxWidth = round($logoHeight * $cropWidth / $cropHeight, 1);
         $sizeX = round($imageWidth / $cropWidth * 100, 2);

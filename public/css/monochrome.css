@@ -1195,9 +1195,9 @@ textarea::placeholder {
     color: #111111 !important;
 }
 
-/* Logo klien di atas nama; klien tanpa logo tetap sejajar di bawah */
+/* Logo klien beda tinggi (lihat 'height' di trusted-marquee.blade.php): disejajarkan di tengah */
 .vp-marquee-clients {
-    align-items: flex-end;
+    align-items: center;
 }
 
 .vp-client {

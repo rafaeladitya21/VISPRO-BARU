@@ -4105,7 +4105,7 @@
 
             <div class="vp-section-intro">
                 <h2 class="vp-section-heading">Corporate &amp; Event Production.</h2>
-                <p class="vp-section-lead">Solusi lengkap untuk berbagai event korporat dan produksi acara berskala kecil hingga besar.</p>
+                <p class="vp-section-lead">Solusi lengkap untuk berbagai event dan produksi acara.</p>
             </div>
 
             <div class="vp-work-grid" id="corporate-event-grid">
