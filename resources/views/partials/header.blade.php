@@ -4,7 +4,7 @@
 <header class="vp-header" id="vpHeader">
     <a href="{{ url('/') }}#top" class="vp-brand" aria-label="Visual Production - Beranda">
         <span class="vp-brand-logo">
-            <img src="{{ asset('images/logo-vp.webp') }}" alt="Visual Production" class="vp-brand-logo-img">
+            <img src="{{ asset('images/logo-visual-production.png') }}" alt="Visual Production" class="vp-brand-logo-img">
         </span>
         <span class="vp-brand-divider" aria-hidden="true"></span>
         <span class="vp-brand-text">CREATIVE STUDIO<br>MALANG</span>

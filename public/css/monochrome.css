@@ -2324,17 +2324,12 @@ textarea::placeholder {
     flex-shrink: 0;
 }
 
-/* Logo footer 1.6x ukuran header: semua angka potongan (header.css) dikali 1.6 agar proporsinya sama */
-.vp-footer .vp-brand-logo {
-    width: 192px;
-    height: 64px;
-}
-
+/* Logo footer 1.6x tinggi logo header */
 .vp-footer .vp-brand-logo-img {
-    top: -176px;
-    left: -66px;
-    width: 320px;
-    height: 400px;
+    height: 35px;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: left center;
 }
 
 .vp-footer-columns {

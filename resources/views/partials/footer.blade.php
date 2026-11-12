@@ -51,7 +51,7 @@
     <div class="vp-footer-main">
         <a href="{{ url('/') }}#top" class="vp-footer-logo" aria-label="Visual Production - kembali ke atas">
             <span class="vp-brand-logo">
-                <img src="{{ asset('images/logo-vp.webp') }}" alt="Visual Production" class="vp-brand-logo-img">
+                <img src="{{ asset('images/logo-visual-production.png') }}" alt="Visual Production" class="vp-brand-logo-img">
             </span>
         </a>
 
