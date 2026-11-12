@@ -7,7 +7,7 @@
             <img src="{{ asset('images/logo-visual-production.png') }}" alt="Visual Production" class="vp-brand-logo-img">
         </span>
         <span class="vp-brand-divider" aria-hidden="true"></span>
-        <span class="vp-brand-text">CREATIVE STUDIO<br>MALANG</span>
+        <span class="vp-brand-text">MULTIMEDIA<br>MALANG</span>
     </a>
 
     <nav class="vp-nav" aria-label="Menu utama">
