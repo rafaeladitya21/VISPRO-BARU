@@ -263,12 +263,18 @@ body {
     }
 
     .vp-brand-logo-img {
-        height: 16px;
+        height: 13px;
     }
 
     .vp-cta {
         padding: 10px 16px;
         gap: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .vp-brand-logo-img {
+        height: 11px;
     }
 }
 

@@ -2407,6 +2407,10 @@ textarea::placeholder {
         gap: 40px;
     }
 
+    .vp-footer .vp-brand-logo-img {
+        height: 22px;
+    }
+
     .vp-footer-columns {
         flex-direction: column;
         gap: 36px;
