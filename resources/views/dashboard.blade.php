@@ -4036,19 +4036,19 @@
             {{-- Project unggulan kedua: gaya sama persis dengan slider Sunset Di Kebun --}}
             <div class="vp-showcase">
                 <div class="vp-showcase-frame manual-slideshow" data-counter-pad="2">
-                    @foreach (['paradic1.webp', 'paradic3.webp', 'paradic1.webp'] as $image)
-                        <div @class(['manual-slide', 'manual-slide-active' => $loop->first]) role="img" aria-label="Paradicfest Vol 2, foto {{ $loop->iteration }}" style="background-image: url('{{ asset('images/'.$image) }}');"></div>
+                    @foreach (array_map(fn ($n) => "WEHEARUUU{$n}.webp", range(1, 20)) as $image)
+                        <div @class(['manual-slide', 'manual-slide-active' => $loop->first]) role="img" aria-label="Wehearuuu, foto {{ $loop->iteration }}" style="background-image: url('{{ asset('images/'.$image) }}');"></div>
                     @endforeach
 
                     <div class="vp-showcase-shade" aria-hidden="true"></div>
 
                     <div class="vp-showcase-caption">
-                        <h3 class="vp-showcase-name">Paradicfest Vol 2</h3>
-                        <p class="vp-showcase-meta">Festival · Multicam · 2025</p>
+                        <h3 class="vp-showcase-name">Wehearuuu</h3>
+                        <p class="vp-showcase-meta">Festival</p>
                     </div>
 
                     <div class="vp-showcase-controls">
-                        <span class="manual-counter vp-showcase-counter" aria-live="polite">01 / 03</span>
+                        <span class="manual-counter vp-showcase-counter" aria-live="polite">01 / 20</span>
                         <button type="button" class="manual-arrow manual-arrow-prev vp-showcase-arrow vp-showcase-arrow--prev" aria-label="Foto sebelumnya">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <path d="M20 12H4M4 12L10 6M4 12L10 18" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -4072,7 +4072,9 @@
                     ['name' => 'Preston', 'category' => 'Festival', 'year' => 2026, 'images' => ['preston1.webp', 'preston2.webp', 'preston3.webp', 'preston4.webp']],
                     ['name' => 'XGANZA', 'category' => 'Festival', 'year' => 2024, 'images' => ['X1.webp', 'X2.webp', 'X3.webp', 'X4.webp']],
                     ['name' => 'GKM x RED Uv', 'category' => 'Festival', 'year' => null, 'images' => array_map(fn ($n) => "Gkm ({$n} of 24).webp", range(1, 8))],
-                ];
+                    ['name' => 'Dempo Fair', 'category' => 'Festival', 'year' => null, 'images' => array_map(fn ($n) => "DEMPO{$n}.webp", range(1, 15))],
+                    ['name' => 'Fisteria', 'category' => 'Festival', 'year' => null, 'images' => array_map(fn ($n) => "FISTERIA{$n}.webp", range(1, 15))],
+                    ['name' => 'Parti Libur', 'category' => 'Festival', 'year' => null, 'images' => array_map(fn ($n) => "PARTILIBUR{$n}.webp", range(1, 19))],                ];
             @endphp
 
             <div class="vp-work-grid vp-work-grid--portfolio" id="semua-proyek">
