@@ -5,7 +5,7 @@
     Kelas is-static = keadaan akhir tanpa animasi; dilepas oleh JS saat animasi berjalan.
 --}}
 @php
-    $featuredImage = 'SUNSET1.webp';
+    $featuredImage = 'FISTERIA10.webp';
     /* Foto kedua: muncul saat zoom knockout, menjadi foto yang ter-scroll setelah pin selesai */
     $secondImage = 'Gkm (14 of 24).webp';
 @endphp
