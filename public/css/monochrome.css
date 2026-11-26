@@ -1073,9 +1073,22 @@ textarea::placeholder {
     color: #8a8a8a !important;
 }
 
-/* Perangkat tanpa hover: counter selalu tampil */
+/* Slider bisa digeser dengan jari/mouse; scroll vertikal halaman tetap jalan */
+.manual-slideshow {
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+}
+
+.manual-slideshow:active {
+    cursor: grabbing;
+}
+
+/* Perangkat tanpa hover: counter dan panah selalu tampil */
 @media (hover: none) {
-    .vp-work-media.manual-slideshow .manual-counter {
+    .vp-work-media.manual-slideshow .manual-counter,
+    .vp-work-media.manual-slideshow .manual-arrow {
         opacity: 1;
     }
 }

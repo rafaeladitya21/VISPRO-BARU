@@ -4603,19 +4603,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
 
-            // Touch / swipe support untuk mobile
-            let touchStartX = 0;
-            let touchEndX = 0;
-            container.addEventListener('touchstart', function(e) {
-                touchStartX = e.changedTouches[0].screenX;
-            }, { passive: true });
-            container.addEventListener('touchend', function(e) {
-                touchEndX = e.changedTouches[0].screenX;
-                const diff = touchStartX - touchEndX;
+            // Geser (swipe) dengan jari maupun drag mouse
+            let dragStartX = null;
+            container.addEventListener('pointerdown', function(e) {
+                if (e.target.closest('.manual-arrow') || (e.pointerType === 'mouse' && e.button !== 0)) return;
+                dragStartX = e.clientX;
+            });
+            container.addEventListener('pointerup', function(e) {
+                if (dragStartX === null) return;
+                const diff = dragStartX - e.clientX;
+                dragStartX = null;
                 if (Math.abs(diff) > 40) {
                     if (diff > 0) next(); else prev();
                 }
-            }, { passive: true });
+            });
+            container.addEventListener('pointercancel', function() { dragStartX = null; });
+            container.addEventListener('pointerleave', function() { dragStartX = null; });
+
+            // Geser horizontal dengan trackpad
+            let wheelLocked = false;
+            container.addEventListener('wheel', function(e) {
+                if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || Math.abs(e.deltaX) < 20) return;
+                e.preventDefault();
+                if (wheelLocked) return;
+                wheelLocked = true;
+                if (e.deltaX > 0) next(); else prev();
+                setTimeout(function() { wheelLocked = false; }, 500);
+            }, { passive: false });
 
             // Inisialisasi: pastikan hanya slide pertama yang aktif
             goTo(0);
