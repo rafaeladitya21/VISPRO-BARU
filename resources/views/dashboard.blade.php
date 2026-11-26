@@ -3744,6 +3744,11 @@
 
 
     </style>
+
+    {{-- Dimuat di head (setelah style inline, urutan tetap) agar tidak sempat tampil gaya lama saat refresh --}}
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}?v={{ @filemtime(public_path('css/header.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/portfolio-intro.css') }}?v={{ @filemtime(public_path('css/portfolio-intro.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/monochrome.css') }}?v={{ @filemtime(public_path('css/monochrome.css')) }}">
 </head>
 
 
@@ -4066,9 +4071,9 @@
             @php
                 /* Kartu kecil Portofolio. Isi/ubah data di sini; tampilan diatur komponen x-project-card. */
                 $portfolioProjects = [
-                    ['name' => 'Romansa Project', 'category' => 'Multicam', 'year' => 2024, 'images' => ['dewa 19.webp', 'romansa2.webp', 'romansa3.webp', 'romansa4.webp']],
-                    ['name' => 'SayapMas Festival', 'category' => 'Festival', 'year' => 2025, 'images' => ['sayapmas.webp', 'sayapmas2.webp', 'sayapmas3.webp', 'sayapmas4.webp']],
-                    ['name' => 'Rasvara Fest', 'category' => 'Festival', 'year' => 2026, 'images' => ['rasvara.webp', 'rasvara2.webp', 'rasvara3.webp', 'rasvara4.webp']],
+                    ['name' => 'Romansa Project', 'category' => 'Multicam', 'year' => 2024, 'images' => ['dewa 19.webp']],
+                    ['name' => 'SayapMas Festival', 'category' => 'Festival', 'year' => 2025, 'images' => ['sayapmas.webp']],
+                    ['name' => 'Rasvara Fest', 'category' => 'Festival', 'year' => 2026, 'images' => ['rasvara.webp']],
                     ['name' => 'Preston', 'category' => 'Festival', 'year' => 2026, 'images' => ['preston1.webp', 'preston2.webp', 'preston3.webp', 'preston4.webp']],
                     ['name' => 'XGANZA', 'category' => 'Festival', 'year' => 2024, 'images' => ['X1.webp', 'X2.webp', 'X3.webp', 'X4.webp']],
                     ['name' => 'GKM x RED Uv', 'category' => 'Festival', 'year' => null, 'images' => array_map(fn ($n) => "Gkm ({$n} of 24).webp", range(1, 8))],
@@ -4637,7 +4642,6 @@ document.addEventListener('DOMContentLoaded', function () {
     })();
 </script>
 
-    <link rel="stylesheet" href="{{ asset('css/monochrome.css') }}?v={{ @filemtime(public_path('css/monochrome.css')) }}">
     <div class="grain" aria-hidden="true"></div>
 </body>
 </html>

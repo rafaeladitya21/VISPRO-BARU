@@ -10,7 +10,6 @@
     $secondImage = 'Gkm (14 of 24).webp';
 @endphp
 
-<link rel="stylesheet" href="{{ asset('css/portfolio-intro.css') }}?v={{ @filemtime(public_path('css/portfolio-intro.css')) }}">
 <link rel="preload" as="image" href="{{ asset('images/'.$featuredImage) }}">
 <link rel="preload" as="image" href="{{ asset('images/'.$secondImage) }}">
 
