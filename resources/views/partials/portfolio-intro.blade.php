@@ -7,7 +7,7 @@
 @php
     $featuredImage = 'FISTERIA10.webp';
     /* Foto kedua: muncul saat zoom knockout, menjadi foto yang ter-scroll setelah pin selesai */
-    $secondImage = 'Gkm (14 of 24).webp';
+    $secondImage = 'WEHEARUUU19.webp';
 @endphp
 
 <link rel="preload" as="image" href="{{ asset('images/'.$featuredImage) }}">
